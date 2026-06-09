@@ -136,6 +136,7 @@ impl AtomicCounters {
                 if self.try_exchange(old_value, new_value, Ordering::SeqCst) {
                     return new_value;
                 }
+                std::hint::spin_loop();
             } else {
                 return old_value;
             }

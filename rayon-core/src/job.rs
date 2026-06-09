@@ -270,7 +270,7 @@ impl Job for JobFifo {
                 match this.inner.steal() {
                     Steal::Success(job_ref) => break job_ref.execute(),
                     Steal::Empty => panic!("FIFO is empty"),
-                    Steal::Retry => {}
+                    Steal::Retry => std::hint::spin_loop(),
                 }
             }
         }
