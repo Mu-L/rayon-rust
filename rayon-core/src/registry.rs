@@ -450,7 +450,7 @@ impl Registry {
             match self.injected_jobs.steal() {
                 Steal::Success(job) => return Some(job),
                 Steal::Empty => return None,
-                Steal::Retry => {}
+                Steal::Retry => std::hint::spin_loop(),
             }
         }
     }
@@ -757,7 +757,7 @@ impl WorkerThread {
             match self.stealer.steal() {
                 Steal::Success(job) => return Some(job),
                 Steal::Empty => return None,
-                Steal::Retry => {}
+                Steal::Retry => std::hint::spin_loop(),
             }
         }
     }
@@ -903,6 +903,7 @@ impl WorkerThread {
             if job.is_some() || !retry {
                 return job;
             }
+            std::hint::spin_loop();
         }
     }
 }
