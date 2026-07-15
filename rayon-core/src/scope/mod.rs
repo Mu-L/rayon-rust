@@ -382,8 +382,15 @@ where
 /// spawned into `s` complete.
 ///
 /// This is just like `scope()` except the closure runs on the same thread
-/// that calls `in_place_scope()`. Only work that it spawns runs in the
-/// thread pool.
+/// that calls `in_place_scope()`.
+///
+/// Only tasks spawned into the scope -- with [`Scope::spawn()`] or
+/// [`Scope::spawn_broadcast()`] -- run in the scope's thread pool. Other Rayon
+/// operations called inside the closure, such as [`join()`](crate::join),
+/// [`spawn()`](crate::spawn), or parallel iterators, do not inherit that pool;
+/// any work they hand off to Rayon runs in the current thread pool -- the
+/// calling worker's pool, or the global pool when `in_place_scope()` is not
+/// called from within a worker thread.
 ///
 /// # Panics
 ///
@@ -433,8 +440,15 @@ fn get_in_place_thread_registry(
 /// that have been spawned into `s` complete.
 ///
 /// This is just like `scope_fifo()` except the closure runs on the same thread
-/// that calls `in_place_scope_fifo()`. Only work that it spawns runs in the
-/// thread pool.
+/// that calls `in_place_scope_fifo()`.
+///
+/// Only tasks spawned into the scope -- with [`ScopeFifo::spawn_fifo()`] or
+/// [`ScopeFifo::spawn_broadcast()`] -- run in the scope's thread pool. Other
+/// Rayon operations called inside the closure, such as [`join()`](crate::join),
+/// [`spawn()`](crate::spawn), or parallel iterators, do not inherit that pool;
+/// any work they hand off to Rayon runs in the current thread pool -- the
+/// calling worker's pool, or the global pool when `in_place_scope_fifo()` is
+/// not called from within a worker thread.
 ///
 /// # Panics
 ///
